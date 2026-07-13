@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using UnityEditor.Build;
 using System.IO;
 
 public class BuildScript
@@ -27,12 +28,19 @@ public class BuildScript
         options.targetGroup = BuildTargetGroup.WebGL;
         options.options = BuildOptions.None;
 
+        // Desactivar compresión gzip para compatibilidad universal con navegadores
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.WebGL, ScriptingImplementation.IL2CPP);
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        // Aumentar memoria para evitar crashes al cargar
+        PlayerSettings.WebGL.memorySize = 256;
+
         BuildReport report = BuildPipeline.BuildPlayer(options);
         BuildSummary summary = report.summary;
 
         if (summary.result == BuildResult.Succeeded)
         {
-            Debug.Log("✅ BUILD WEBGL EXITOSO");
+            Debug.Log("✅ BUILD WEBGL EXITOSO (sin gzip)");
             Debug.Log("📁 Tamaño total: " + summary.totalSize + " bytes");
             Debug.Log("⏱️ Tiempo: " + summary.totalTime);
         }
