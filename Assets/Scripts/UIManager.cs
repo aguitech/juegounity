@@ -39,6 +39,13 @@ public class UIManager : MonoBehaviour
         if (highScoreText != null) highScoreText.text = "HI: " + Mathf.FloorToInt(gm.highScore).ToString();
     }
 
+    public void HideAllPanels()
+    {
+        if (menuPanel != null) menuPanel.SetActive(false);
+        if (gameplayPanel != null) gameplayPanel.SetActive(true);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+    }
+
     public void ShowGameplay()
     {
         if (menuPanel != null) menuPanel.SetActive(false);

@@ -52,6 +52,18 @@ public class GameManager : MonoBehaviour
         if (ui != null) ui.ShowGameplay();
     }
 
+    // Wrapper llamado desde HTML overlay button via JS: SendMessage('GameManager', 'StartGameFromJS')
+    public void StartGameFromJS()
+    {
+        StartGame();
+    }
+
+    // Wrapper llamado desde HTML overlay para restart
+    public void RestartGameFromJS()
+    {
+        RestartGame();
+    }
+
     public void GameOver()
     {
         currentState = GameState.GameOver;
@@ -66,6 +78,18 @@ public class GameManager : MonoBehaviour
         if (ui != null) ui.ShowGameOver(score, highScore);
 
         if (player != null) player.Die();
+
+        // Notificar al HTML overlay para mostrar restart button
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        try {
+            // Application.ExternalEval ejecuta JS en el navegador
+            Application.ExternalEval(string.Format(
+                "if(window.parent!==window){{window.parent.postMessage({{type:'gameover',score:{0},hi:{1}}},'*');}}else{{window.postMessage({{type:'gameover',score:{0},hi:{1}}},'*');}}",
+                Mathf.FloorToInt(score),
+                Mathf.FloorToInt(highScore)
+            ));
+        } catch(System.Exception e) { Debug.Log("ExternalEval failed: " + e.Message); }
+        #endif
     }
 
     public void RestartGame()
