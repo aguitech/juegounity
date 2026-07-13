@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 public class SceneBuilder
@@ -10,7 +11,7 @@ public class SceneBuilder
     public static void BuildScene()
     {
         // Crear nueva escena
-        Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneSetup.NewSceneMode.Single);
+        Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         newScene.name = "CyberDrifter";
 
         // ===== CÁMARA =====
@@ -88,7 +89,7 @@ public class SceneBuilder
         playerMat.SetFloat("_Glossiness", 0.9f);
         playerRend.material = playerMat;
         // Quitar collider default (usaremos trigger)
-        DestroyImmediate(player.GetComponent<CapsuleCollider>());
+        UnityEngine.Object.DestroyImmediate(player.GetComponent<CapsuleCollider>());
 
         Rigidbody rb = player.AddComponent<Rigidbody>();
         rb.useGravity = false;
@@ -127,7 +128,7 @@ public class SceneBuilder
         // Hacerlo prefab y destruir la instancia
         string obstaclePath = "Assets/Prefabs/Obstacle.prefab";
         GameObject obstacleAsset = PrefabUtility.SaveAsPrefabAsset(obstaclePrefab, obstaclePath);
-        DestroyImmediate(obstaclePrefab);
+        UnityEngine.Object.DestroyImmediate(obstaclePrefab);
 
         // Crear prefab de orbe (esfera)
         GameObject orbPrefab = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -139,12 +140,12 @@ public class SceneBuilder
         orbMat.SetColor("_EmissionColor", new Color(1f, 0.8f, 0f) * 3f);
         orbMat.EnableKeyword("_EMISSION");
         orbRend.material = orbMat;
-        DestroyImmediate(orbPrefab.GetComponent<SphereCollider>());
+        UnityEngine.Object.DestroyImmediate(orbPrefab.GetComponent<SphereCollider>());
         SphereCollider orbCollider = orbPrefab.AddComponent<SphereCollider>();
         orbCollider.isTrigger = true;
         string orbPath = "Assets/Prefabs/Orb.prefab";
         GameObject orbAsset = PrefabUtility.SaveAsPrefabAsset(orbPrefab, orbPath);
-        DestroyImmediate(orbPrefab);
+        UnityEngine.Object.DestroyImmediate(orbPrefab);
 
         sm.obstaclePrefabs = new GameObject[] { obstacleAsset };
         sm.orbPrefab = orbAsset;
@@ -163,7 +164,7 @@ public class SceneBuilder
         bRend.material = bMat;
         string buildingPath = "Assets/Prefabs/Building.prefab";
         GameObject buildingAsset = PrefabUtility.SaveAsPrefabAsset(buildingPrefab, buildingPath);
-        DestroyImmediate(buildingPrefab);
+        UnityEngine.Object.DestroyImmediate(buildingPrefab);
         bs.buildingPrefabs = new GameObject[] { buildingAsset };
 
         // ===== GAME MANAGER =====
@@ -173,7 +174,6 @@ public class SceneBuilder
         gm.ground = ground;
 
         camFollow.target = player.transform;
-        sm.gm = gm;
         pc.gm = gm;
 
         // ===== UI =====
