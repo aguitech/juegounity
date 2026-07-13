@@ -265,6 +265,8 @@ public class SceneBuilder
         txt.alignment = anchor;
         txt.color = new Color(0f, 1f, 1f);
         txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        // IMPORTANTE: raycastTarget=false para que el texto no bloquee clicks al Button
+        txt.raycastTarget = false;
         txtObj.AddComponent<Shadow>().effectColor = new Color(1f, 0f, 1f, 0.7f);
         txtObj.AddComponent<Outline>().effectColor = new Color(0.5f, 0f, 1f, 0.5f);
         return txt;
@@ -275,18 +277,23 @@ public class SceneBuilder
         GameObject btnObj = new GameObject(name);
         btnObj.transform.SetParent(parent);
         RectTransform rt = btnObj.AddComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(280, 70);
+        rt.sizeDelta = new Vector2(360, 100);
         rt.anchoredPosition = pos;
+        // Image background
         UnityEngine.UI.Image img = btnObj.AddComponent<UnityEngine.UI.Image>();
-        img.color = new Color(0f, 0.8f, 1f, 0.9f);
+        img.color = new Color(0f, 0.5f, 1f, 0.95f);
+        // Button component con raycast target
         Button btn = btnObj.AddComponent<Button>();
         btn.targetGraphic = img;
+        btn.interactable = true;
         ColorBlock cb = btn.colors;
+        cb.normalColor = new Color(0f, 0.5f, 1f, 0.95f);
         cb.highlightedColor = new Color(0.5f, 1f, 1f, 1f);
         cb.pressedColor = new Color(1f, 0f, 1f, 1f);
+        cb.selectedColor = new Color(0.5f, 1f, 1f, 1f);
         btn.colors = cb;
 
-        Text btnText = CreateText(btnObj.transform, "Label", label, 32, TextAnchor.MiddleCenter, Vector2.zero);
+        Text btnText = CreateText(btnObj.transform, "Label", label, 36, TextAnchor.MiddleCenter, Vector2.zero);
         btnText.color = Color.black;
         btnText.fontStyle = FontStyle.Bold;
 
